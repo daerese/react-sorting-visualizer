@@ -2,68 +2,118 @@ import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 're
 
 import './App.css'
 
+// * Sorting Algorithm imports
 import { insertionSort } from './utils/sorting_algorithms/insertionSort'
+
+// * utility functions
 import fillArray from './utils/functions/randomArray'
+import sleep from './utils/functions/sleep'
+
 
 
 const Node = (props) => {
 
-    // pos === position
-    // const [pos, setPos] = useState(props.pos);
-
-    const [current, setCurrent] = useState(props.current)
-    const [sorted, setSorted] = useState(false)
-    
     return (
       <div
         className="node"
+
         style={{
           height: props.height,
-          background: current ? 'red' : 'lightblue'
-      }}>
+          background: `${props.sorted ? 'lightgreen' : 'lightblue'}`,
+          transitionDuration: '100ms'
+        }}
+        >
       </div>
     )
   
 }
 
+
 const SorterWrapper = (props) => {
   
-  // const [size, setSize] = useState(10);
   const [arr, setArr] = useState([...fillArray(10)])
+  const [sorted, setSorted] = useState(false)
+
+  const MIN_LENGTH = 10
+  const MAX_LENGTH = 200
+
+
+  const resetSorter = (length) => {
+    setArr([...fillArray(length)])
+    setSorted(false)
+  }
   
-
-  // * This is called every time we input a new array size
-  // useEffect(() => {
-  //   if (size < 10) {
-  //     setSize(10)
-  //   }
-  // }, [size])
-
-  // const randomArr = fillArray(size);
-
   // Event handlers
   const handleChange = (e) => {
     let size = e.target.value
-    if (e.target.value > 200) {
-      size = 200
+    if (e.target.value > MAX_LENGTH) {
+      size = MAX_LENGTH
     }
-    else if (e.target.value < 10) {
-      size = 10
+    else if (e.target.value < MIN_LENGTH) {
+      size = MIN_LENGTH
     }
-    console.log("input changed")
-    // setSize(e.target.value)
-    setArr([...fillArray(size)])
+
+    sorted ? resetSorter(size) : setArr([...fillArray(size)])
   }
 
+  // * Sorting algorithms (Kind of works)
+
+  // * ---------------------------
+  const sort = async () => {
+  
+  const result = insertionSort(arr)
+  const steps = result.steps
+  
+  const nodes = document.getElementsByClassName('node')
+
+  for (let step of steps) {
+
+    // * Index/style of the current node
+
+    for (let comparison of step.comparisons) {
+
+      let currNodeIndex = step.curr[0]
+
+      let currNodeStyle = nodes[currNodeIndex].style
+      let swapNodeStyle = nodes[comparison.index].style
+
+      // * Highlight the current node pink
+      currNodeStyle.background = 'lightpink'
+      await sleep(200)
+
+
+      if (comparison.swapped) {
+
+          // * Set the swapNode color to orange
+          swapNodeStyle.background = 'coral'
+          await sleep(200)
+
+          // * Swap the height (or styles) of the two nodes
+          let tempHeight = currNodeStyle.height
+          currNodeStyle.height = swapNodeStyle.height
+          swapNodeStyle.height = tempHeight
+          sleep(200)
+
+          // * Push the current comparison to the front of the 
+          // * step.curr array.
+          step.curr.unshift(comparison.index)
+          // console.log(`Swapped heights: (${currNodeStyle.height}, ${swapNodeStyle.height})`)
+      }
+    }
+  }
+  
+  // setArr([...result.sortedArray])
+  setSorted(true)
+}
+// * ---------------------------
 
   const nodeArr = arr.map((num, index) => {
     
     return <Node 
     key={index}
     num={num}
-    pos={index}
     height={num}
-    current={false}
+    sorted={sorted}
     />
   })
 
@@ -71,10 +121,6 @@ const SorterWrapper = (props) => {
 
   return (
     <>
-      {/* <Sorter 
-        size={size}
-        // arr={randomArr}
-      /> */}
       <div 
           className="sorter-container"
           style={{
@@ -83,7 +129,6 @@ const SorterWrapper = (props) => {
           }}>
           {nodeArr}
       </div>
-      {/* <button onClick={() => sort(insertionSort, unsortedArr)}>Sort</button> */}
       
       <input 
         className="size-input"
@@ -91,112 +136,11 @@ const SorterWrapper = (props) => {
         placeholder='Min: 10, Max: 200'
       />
 
-      <button onClick={() => setArr(prevArr => {
-        
-        const result = insertionSort(prevArr)
-
-        console.log(result.steps)
-        return [...result.sortedArray]
-        })}>Sort</button>
-      {/* <button onClick={() => insertionSort(arr, setArr, nodeArr)}>Sort</button> */}
+      <button onClick={sort}>Sort</button>
     </>
   )
-
   
 }
-
-// const Sorter = (props) => {
-
-//   const [unsortedArr, setUnsortedArr] = useState()
-
-//   const sort = (sortAlgo, arr) => {
-
-//     /**
-//      * @param {Function} sort --- The sorting algorithm to be used
-//      * @param {Array} arr --- The array to be sorted.
-//      */
-
-//     setUnsortedArr(sortAlgo(arr))
-
-//   }
-
-
-//   // * Create the Node Components from the random array. 
-  // const nodeArr = unsortedArr.map((num, index) => {
-    
-  //   return <Node 
-  //   key={index}
-  //   num={num}
-  //   pos={index}
-  //   height={num}
-  //   current={false}
-  //   />
-  // })
-
-//   return (
-//     <>
-//       <div 
-//           className="sorter-container"
-//           style={{
-//             gridTemplateColumns: `repeat(${props.size}, 1fr)`,
-            
-//           }}>
-//           {nodeArr}
-//       </div>
-//       {/* <button onClick={() => sort(insertionSort, unsortedArr)}>Sort</button> */}
-//       <button onClick={() => setUnsortedArr(insertionSort(unsortedArr))}>Sort</button>
-//     </>
-//   )
-// }
-
-// const Sorter = forwardRef((props, ref) => {
-
-
-
-//   const [unsortedArr, setUnsortedArr] = useState(props.arr)
-
-
-//   useImperativeHandle(ref, () => ({
-//     sort(sortAlgo=insertionSort, arr=unsortedArr) {
-
-//       /**
-//        * @param {Function} sort --- The sorting algorithm to be used
-//        * @param {Array} arr --- The array to be sorted.
-//        */
-
-//       setUnsortedArr(sortAlgo(arr))
-//       console.log("Function called from parent")
-  
-//     }
-
-//   }))
-
-//   const nodeArr = props.arr.map((num, index) => {
-//     return <Node 
-//     key={index}
-//     num={num}
-//     pos={index}
-//     height={num}
-//     current={false}
-//     />
-//   })
-
-//   return (
-//     <div 
-//         className="sorter-container"
-//         style={{
-//           gridTemplateColumns: `repeat(${props.size}, 1fr)`,
-          
-//         }}>
-//         {nodeArr}
-//       </div>
-//   )
-
-
-
-
-// })
-// Sorter.displayName = 'Sorter'
 
 const StateTest = () => {
   const [count, setCount] = useState(0)

@@ -1,5 +1,5 @@
 // The numbers should be between 5 and 600.
-const randomInterval = (min=10, max=601) => {
+const randomInterval = (min=10, max=596) => {
     // min = Math.ceil(min);
     // max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); 

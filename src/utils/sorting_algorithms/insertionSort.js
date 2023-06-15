@@ -1,6 +1,6 @@
 
 
-export function insertionSort(arr) {
+export function insertionSort(arr, stateSet) {
 
   // * Stores the steps taken to sort the array 
   // * This will be used for animating the algorithm
@@ -15,9 +15,10 @@ export function insertionSort(arr) {
           let curr = arr[i]
 
           let currStep = {
-            curr: i,
+            curr: [],
             comparisons: []
           }
+          currStep.curr.push(i)
           // console.log(curr)
           for (let j = i - 1; j >= 0; j--) {
 
@@ -39,7 +40,6 @@ export function insertionSort(arr) {
               }
               currStep.comparisons.push(currComparison)
           }
-
           steps.push(currStep)
       }
     }
