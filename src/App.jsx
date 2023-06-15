@@ -102,7 +102,7 @@ const SorterWrapper = (props) => {
     }
   }
   
-  // setArr([...result.sortedArray])
+  setArr([...result.sortedArray])
   setSorted(true)
 }
 // * ---------------------------
