@@ -8,6 +8,7 @@ import { insertionSort } from './utils/sorting_algorithms/insertionSort'
 // * utility functions
 import fillArray from './utils/functions/randomArray'
 import sleep from './utils/functions/sleep'
+import { bubbleSort } from './utils/sorting_algorithms/bubbleSort'
 
 
 
@@ -20,7 +21,8 @@ const Node = (props) => {
         style={{
           height: props.height,
           background: `${props.sorted ? 'lightgreen' : 'lightblue'}`,
-          transitionDuration: '100ms'
+          transitionDuration: '100ms',
+          textAlign: 'center',
         }}
         >
       </div>
@@ -37,10 +39,19 @@ const SorterWrapper = (props) => {
   const MIN_LENGTH = 10
   const MAX_LENGTH = 200
 
+  const colors = {
+    default: "lightblue",
+    curr: "lightpink",
+    comparison: "coral"
+  }
 
-  const resetSorter = (length) => {
+
+  const resetSorter = (length=MIN_LENGTH) => {
     setArr([...fillArray(length)])
-    setSorted(false)
+
+    if (sorted) {
+      setSorted(false)
+    }
   }
   
   // Event handlers
@@ -59,51 +70,69 @@ const SorterWrapper = (props) => {
   // * Sorting algorithms (Kind of works)
 
   // * ---------------------------
-  const sort = async () => {
-  
-  const result = insertionSort(arr)
-  const steps = result.steps
-  
-  const nodes = document.getElementsByClassName('node')
-
-  for (let step of steps) {
-
-    // * Index/style of the current node
-
-    for (let comparison of step.comparisons) {
-
-      let currNodeIndex = step.curr[0]
-
-      let currNodeStyle = nodes[currNodeIndex].style
-      let swapNodeStyle = nodes[comparison.index].style
-
-      // * Highlight the current node pink
-      currNodeStyle.background = 'lightpink'
-      await sleep(200)
+  const basicSort = async (algorithm, speed=200) => {
 
 
-      if (comparison.swapped) {
 
-          // * Set the swapNode color to orange
-          swapNodeStyle.background = 'coral'
-          await sleep(200)
-
-          // * Swap the height (or styles) of the two nodes
-          let tempHeight = currNodeStyle.height
-          currNodeStyle.height = swapNodeStyle.height
-          swapNodeStyle.height = tempHeight
-          sleep(200)
-
-          // * Push the current comparison to the front of the 
-          // * step.curr array.
-          step.curr.unshift(comparison.index)
-          // console.log(`Swapped heights: (${currNodeStyle.height}, ${swapNodeStyle.height})`)
-      }
+    switch (algorithm) {
+      case "insertion":
+        algorithm = insertionSort
+        break
+      case "bubble":
+        algorithm = bubbleSort
+        break
     }
-  }
   
-  setArr([...result.sortedArray])
-  setSorted(true)
+    const result = algorithm(arr)
+
+    const steps = result.steps
+    
+    console.log(steps)
+
+    const nodes = document.getElementsByClassName('node')
+
+    for (let step of steps) {
+
+      // * Index/style of the current node
+
+      for (let comparison of step.comparisons) {
+
+        let currNodeIndex = step.curr[0]
+
+        let currNodeStyle = nodes[currNodeIndex].style
+        let swapNodeStyle = nodes[comparison.index].style
+
+        // * Highlight the current node pink
+        currNodeStyle.background = 'lightpink'
+        await sleep(speed)
+
+        // * Set the swapNode color to orange
+        swapNodeStyle.background = 'coral'
+        await sleep(speed)
+
+
+        if (comparison.swapped) {
+
+            // * Swap the height (or styles) of the two nodes
+            let tempHeight = currNodeStyle.height
+            currNodeStyle.height = swapNodeStyle.height
+            swapNodeStyle.height = tempHeight
+            sleep(speed)
+
+            // * Push the current comparison to the front of the 
+            // * step.curr array.
+            // console.log(`Swapped heights: (${currNodeStyle.height}, ${swapNodeStyle.height})`)
+          }
+          step.curr.unshift(comparison.index)
+      }
+      for (let node of nodes) {
+        node.style.background = colors.default
+      }
+      sleep(speed)
+    }
+    
+    setArr([...result.sortedArray])
+    setSorted(true)
 }
 // * ---------------------------
 
@@ -136,22 +165,16 @@ const SorterWrapper = (props) => {
         placeholder='Min: 10, Max: 200'
       />
 
-      <button onClick={sort}>Sort</button>
+      <button onClick={() => basicSort("insertion", 500)}>Insertion Sort</button>
+      <button onClick={() => basicSort("bubble", 500)}>Bubble Sort</button>
+      <button onClick={() => basicSort("selection", 500)}>Selection Sort</button>
+      <div style={{marginTop: "1rem"}}>
+        <button onClick={() => resetSorter()}>Reset</button>
+      </div>
+
     </>
   )
   
-}
-
-const StateTest = () => {
-  const [count, setCount] = useState(0)
-
-  return (
-
-    <>
-      <p>{count}</p>
-      <button onClick={() => setCount(prevCount => prevCount + 1)}>increase count</button>
-    </>
-  )
 }
 
 
@@ -166,7 +189,6 @@ function App() {
 
         <SorterWrapper />
 
-        <StateTest />
       </main>
     </>
   )
