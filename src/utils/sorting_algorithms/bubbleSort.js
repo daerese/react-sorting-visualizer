@@ -1,4 +1,4 @@
-export function bubbleSort(arr)  {
+export default function bubbleSort(arr)  {
 
     const steps = []
     

@@ -33,7 +33,26 @@ body {
   /* height: 20px; */
 }
 
-.size-input {
+.input-container * {
   display: block;
-  margin: 0 auto;
+}
+
+.input-container {
+  display: flex;
+  /* gap: 1rem; */
+  justify-content: space-between;
+  width: 50%;
+  margin-bottom: 1rem;
+
+}
+
+@media screen and (max-width: 600px) {
+  .input-container {
+    width: 100%;
+  }
+}
+
+.input {
+  /* display: block;
+  margin: 0 auto; */
 }

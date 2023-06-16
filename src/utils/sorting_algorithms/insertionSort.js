@@ -1,6 +1,6 @@
 
 
-export function insertionSort(arr) {
+export default function insertionSort(arr) {
 
   // * Stores the steps taken to sort the array 
   // * This will be used for animating the algorithm
