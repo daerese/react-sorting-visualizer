@@ -5,7 +5,7 @@ This is my implementation of a sorting visualizer using React.
 Sorting algorithms progress:
 - ~Insertion Sort~ ✅
 - ~Bubble Sort~ ✅
-- Selection Sort 🔘
-- Merge Sort
+- ~Selection Sort~ ✅
+- Merge Sort 🔘
 - Quick Sort
 - Quick Sort (Median of 3)
