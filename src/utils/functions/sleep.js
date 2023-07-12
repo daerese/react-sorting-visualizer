@@ -1,3 +1,4 @@
-export default function sleep(ms) {
+export default function sleepMain(ms) {
+
     return new Promise(resolve => setTimeout(resolve, ms));
 }

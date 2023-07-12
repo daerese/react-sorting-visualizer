@@ -1,6 +1,6 @@
+import sleep from '../functions/sleep'
 
-
-export default function insertionSort(arr) {
+export function insertionSort(arr) {
 
   // * Stores the steps taken to sort the array 
   // * This will be used for animating the algorithm
@@ -47,3 +47,49 @@ export default function insertionSort(arr) {
     return {sortedArray: arr, steps: steps}
 
   }
+
+
+export async function insertionSortAnim(steps, speed, nodes, colors) {
+
+    // * Insertion / Bubble Sort Visual
+    // **********************
+    for (let step of steps) {
+
+      // * Index/style of the current node
+
+      for (let comparison of step.comparisons) {
+
+        let currNodeIndex = step.curr[0]
+
+        let currNodeStyle = nodes[currNodeIndex].style
+        let swapNodeStyle = nodes[comparison.index].style
+
+        // * Highlight the current node pink
+        currNodeStyle.background = 'lightpink'
+        await sleep(speed)
+
+        // * Set the swapNode color to orange
+        swapNodeStyle.background = 'coral'
+        await sleep(speed)
+
+        if (comparison.swapped) {
+
+            // * Swap the height (or styles) of the two nodes
+            let tempHeight = currNodeStyle.height
+            currNodeStyle.height = swapNodeStyle.height
+            swapNodeStyle.height = tempHeight
+            
+            // * Push the current comparison to the front of the 
+            // * step.curr array.
+            // console.log(`Swapped heights: (${currNodeStyle.height}, ${swapNodeStyle.height})`)
+            // await sleep(speed, sampler, notes, noteIndex++)
+          }
+          step.curr.unshift(comparison.index)
+      }
+      for (let node of nodes) {
+        node.style.background = colors.default
+      }
+      await sleep(speed)
+    }
+    // **********************
+}

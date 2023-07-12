@@ -3,17 +3,27 @@ import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 're
 import './App.css'
 
 // * Sorting Algorithm imports
-
-import insertionSort from './utils/sorting_algorithms/insertionSort'
+import { insertionSort, insertionSortAnim} from './utils/sorting_algorithms/insertionSort'
 import bubbleSort from './utils/sorting_algorithms/bubbleSort'
-import selectionSort from './utils/sorting_algorithms/selectionSort'
+import { selectionSort, selectionSortAnim } from './utils/sorting_algorithms/selectionSort'
+import { getMergeSort, MergeSort } from './utils/sorting_algorithms/mergeSort'
+
 
 // * utility functions
 import fillArray from './utils/functions/randomArray'
-import sleep from './utils/functions/sleep'
+// import sleep from './utils/functions/sleep'
+import sleepMain from './utils/functions/sleep'
+
+// * Tone.js import + notes
+import * as Tone from 'tone'
+import songs from './utils/Music/songs'
 
 
 const Node = (props) => {
+
+  useEffect(() => {
+    console.log("Node change")
+  })
 
     return (
       <div
@@ -22,7 +32,7 @@ const Node = (props) => {
         style={{
           height: props.height,
           background: `${props.sorted ? 'lightgreen' : 'lightblue'}`,
-          transitionDuration: '100ms',
+          transitionDuration: '75ms',
           textAlign: 'center',
         }}
         >
@@ -59,6 +69,29 @@ const SorterWrapper = (props) => {
       setSorted(false)
     }
   };
+
+  // * Local sleep with music
+  // function sleep(ms, sampler=null, notes=null, noteIndex=0) {
+
+  //   if (noteIndex >= notes.length) {
+  //     noteIndex = 0
+  //   }
+
+  //   if (sampler && notes) {
+
+  //       Tone.loaded().then(() => {
+  //           // * In case the current note is a chord, just destrecture
+  //           // * the chord array into this array.
+  //           sampler.triggerAttackRelease(notes[noteIndex]);
+  //           console.log(notes[noteIndex])
+  //       })
+  //       // sampler.triggerAttackRelease(...notes[noteIndex], "8n")
+  //   }
+
+  //   // console.log(...notes[noteIndex])
+
+  //   return new Promise(resolve => setTimeout(resolve, ms));
+  // }
   
   // * Event handlers
   const changeSize = (e) => {
@@ -92,6 +125,7 @@ const SorterWrapper = (props) => {
   const basicSort = async (algorithm, speed=200) => {
 
     let isSelection = false
+    let isMerge = false
 
     switch (algorithm) {
       case "insertion":
@@ -103,112 +137,56 @@ const SorterWrapper = (props) => {
       case "selection":
         algorithm = selectionSort
         isSelection = true
+        break
+      case "merge":
+        algorithm = new MergeSort()
+        isMerge = true
+        break
     }
-  
-    const result = algorithm(arr)
+
+    // * Sound Effect intialization with Tone.js
+    const sampler = new Tone.Sampler({
+      urls: {
+        C3: "/src/assets/c3-95007.mp3",
+      },
+      // onload: () => {
+      //   sampler.triggerAttackRelease(["A1"], 1);
+      // }
+    }).toDestination();
+
+    // sampler.volume.value = -10
+    // const sampler = new Tone.Synth().toDestination();
+    const notes = songs.twinkle
+    let noteIndex = 0
+
+    // console.log("ORIGINAL ARRAY: ", arr)
+    // const result = algorithm(arr)
+    // const result = algorithm.getMergeSort(arr)
+
+    const result = isMerge ? algorithm.getMergeSort(arr) : algorithm(arr)
 
     const steps = result.steps
     
-    console.log(steps)
+    console.log("STEPS: ", steps)
 
     const nodes = document.getElementsByClassName('node')
 
+    
 
-    if (!isSelection) {
+
+    if (!isSelection && !isMerge) {
       // * Insertion / Bubble Sort Visual
       // **********************
-      for (let step of steps) {
-  
-        // * Index/style of the current node
-  
-        for (let comparison of step.comparisons) {
-  
-          let currNodeIndex = step.curr[0]
-  
-          let currNodeStyle = nodes[currNodeIndex].style
-          let swapNodeStyle = nodes[comparison.index].style
-  
-          // * Highlight the current node pink
-          currNodeStyle.background = 'lightpink'
-          await sleep(speed)
-  
-          // * Set the swapNode color to orange
-          swapNodeStyle.background = 'coral'
-          await sleep(speed)
-  
-  
-          if (comparison.swapped) {
-  
-              // * Swap the height (or styles) of the two nodes
-              let tempHeight = currNodeStyle.height
-              currNodeStyle.height = swapNodeStyle.height
-              swapNodeStyle.height = tempHeight
-              sleep(speed)
-  
-              // * Push the current comparison to the front of the 
-              // * step.curr array.
-              // console.log(`Swapped heights: (${currNodeStyle.height}, ${swapNodeStyle.height})`)
-            }
-            step.curr.unshift(comparison.index)
-        }
-        for (let node of nodes) {
-          node.style.background = colors.default
-        }
-        sleep(speed)
-      }
+      await insertionSortAnim(steps, speed, nodes, colors)
       // **********************
+    }
+    else if (isMerge) {
+      await algorithm.mergeSortAnim(speed, nodes, colors, setArr)
+      console.log("Do merge...")
     }
     else {
       // * Selection Sort Visual
-      for (let step of steps) {
-
-
-        // * If a new minimum value was found, 
-        // * the animation will swap the new min with the origin.
-        let originNodeIndex = step.origin
-        let originNodeStyle = nodes[originNodeIndex].style
-
-        // * Set the first node as the minimum (to red)
-        let minNodeStyle = originNodeStyle
-        minNodeStyle.background = "red"
-        await sleep(speed)
-
-        for (let comparison of step.comparisons) {
-
-          // * get the comparison node
-          let nextNodeStyle = nodes[comparison.index].style
-
-          // * highlight red if new min, othwerwise highlight pink
-          if (comparison.newMin) {
-            nextNodeStyle.background = "red"
-            await sleep(speed)
-            minNodeStyle.background = "pink"
-            minNodeStyle = nextNodeStyle;
-
-            step.min = comparison.index
-            
-          }
-          else {
-            nextNodeStyle.background = "pink"
-            await sleep(speed)
-          }
-        }
-
-        // * Swap with the origin
-        originNodeStyle.background = "coral"
-        minNodeStyle.background = "coral"
-        await sleep(speed)
-
-        let tempHeight = originNodeStyle.height
-        originNodeStyle.height = minNodeStyle.height
-        minNodeStyle.height = tempHeight
-        await sleep(speed)
-
-        // * Reset the nodes
-        for (let node of nodes) {
-          node.style.background = colors.default
-        }
-      }
+      await selectionSortAnim(steps, speed, nodes, colors)
     }
     
     setArr([...result.sortedArray])
@@ -262,6 +240,8 @@ const SorterWrapper = (props) => {
       <button onClick={() => basicSort("insertion", speed)}>Insertion Sort</button>
       <button onClick={() => basicSort("bubble", speed)}>Bubble Sort</button>
       <button onClick={() => basicSort("selection", speed)}>Selection Sort</button>
+
+      <button onClick={() => basicSort("merge", speed)}>Merge Sort</button>
       
       <div style={{marginTop: "1rem"}}>
         <button onClick={() => resetSorter()}>Reset</button>
@@ -270,6 +250,29 @@ const SorterWrapper = (props) => {
     </>
   )
   
+}
+
+const SoundTest = () => {
+  // const sampler = new Tone.Sampler({
+  //   urls: {
+  //     C3: "/src/assets/c3-95007.mp3",
+  //   },
+  //   // onload: () => {
+  //   //   sampler.triggerAttackRelease(["A1"], 1);
+  //   // }
+  // }).toDestination();
+
+  const sampler = new Tone.Synth().toDestination();
+
+  const playSound = () => {
+
+    sampler.triggerAttackRelease("C4", "8n")
+    // sampler.triggerAttackRelease("G4", "8n")
+  }
+
+  return (
+    <button onClick={() => playSound()}>Play a sound...</button>
+  )
 }
 
 
@@ -283,6 +286,8 @@ function App() {
         <h1>Sorter</h1>
 
         <SorterWrapper />
+
+        <SoundTest />
 
       </main>
     </>
