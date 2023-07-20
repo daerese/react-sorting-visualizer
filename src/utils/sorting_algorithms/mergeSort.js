@@ -129,8 +129,8 @@ class MergeSort {
                 const leftStyle = nodes[mergeStep.left].style
                 const rightStyle = nodes[mergeStep.right].style
 
-                leftStyle.background = "lightgreen"
-                rightStyle.background = "lightgreen"
+                leftStyle.background = "coral"
+                rightStyle.background = "coral"
                 await sleep(speed)
 
                 if (mergeStep.change) {

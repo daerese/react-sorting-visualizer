@@ -18,6 +18,11 @@ import sleepMain from './utils/functions/sleep'
 import * as Tone from 'tone'
 import songs from './utils/Music/songs'
 
+// * Font awesome import
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import {  } from '@fortawesome/free-solid-svg-icons'
+// import { faGithub } from 
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 const Node = (props) => {
 
@@ -32,7 +37,7 @@ const Node = (props) => {
         style={{
           height: props.height,
           background: `${props.sorted ? 'lightgreen' : 'lightblue'}`,
-          transitionDuration: '75ms',
+          transitionDuration: '35ms',
           textAlign: 'center',
         }}
         >
@@ -44,8 +49,9 @@ const Node = (props) => {
 
 const SorterWrapper = (props) => {
   
-  const [arr, setArr] = useState([...fillArray(10)]);
   const [speed, setSpeed] = useState(500);
+  const [size, setSize] = useState(10)
+  const [arr, setArr] = useState([...fillArray(size)]);
   const [sorted, setSorted] = useState(false);
 
   const MIN_LENGTH = 10;
@@ -61,8 +67,11 @@ const SorterWrapper = (props) => {
   };
 
   // * Utility functions
-  const resetSorter = (length=MIN_LENGTH, speed=500) => {
-    setArr([...fillArray(length)])
+  const resetSorter = (length=MIN_LENGTH) => {
+    // setArr([...fillArray(length)])
+
+    setArr([...fillArray(size)])
+    setSpeed(speed)
 
 
     if (sorted) {
@@ -95,25 +104,28 @@ const SorterWrapper = (props) => {
   
   // * Event handlers
   const changeSize = (e) => {
-    let size = e.target.value
+    let tempSize = e.target.value
     if (e.target.value > MAX_LENGTH) {
-      size = MAX_LENGTH
+      tempSize = MAX_LENGTH
     }
     else if (e.target.value < MIN_LENGTH) {
-      size = MIN_LENGTH
+      tempSize = MIN_LENGTH
     }
 
-    sorted ? resetSorter(size, speed) : setArr([...fillArray(size)])
+    setSize(tempSize)
+    sorted ? resetSorter(tempSize, speed) : setArr([...fillArray(tempSize)])
   }
 
   const changeSpeed = (e) => {
     let speed = e.target.value
-    if (speed > MAX_SPEED) {
-      speed = MAX_SPEED
-    }
-    else if (speed < MIN_SPEED) {
-      speed = MIN_SPEED
-    }
+    console.log(speed)
+    
+    // if (speed > MAX_SPEED) {
+    //   speed = MAX_SPEED
+    // }
+    // else if (speed < MIN_SPEED) {
+    //   speed = MIN_SPEED
+    // }
 
     sorted ? resetSorter(arr.length, speed) : setSpeed(speed)
 
@@ -159,10 +171,6 @@ const SorterWrapper = (props) => {
     const notes = songs.twinkle
     let noteIndex = 0
 
-    // console.log("ORIGINAL ARRAY: ", arr)
-    // const result = algorithm(arr)
-    // const result = algorithm.getMergeSort(arr)
-
     const result = isMerge ? algorithm.getMergeSort(arr) : algorithm(arr)
 
     const steps = result.steps
@@ -207,45 +215,76 @@ const SorterWrapper = (props) => {
 
   return (
     <>
-      <div 
-          className="sorter-container"
-          style={{
-            gridTemplateColumns: `repeat(${arr.length}, 1fr)`,
-            
-          }}>
-          {nodeArr}
+
+      <div className='wrapper'>
+
+        <main>
+        {/* Show the name of the current algorithm here... */}
+          <h1>Sorter</h1>
+          <div 
+              className="sorter-container"
+              style={{
+                gridTemplateColumns: `repeat(${arr.length}, 1fr)`,
+                
+              }}>
+              {nodeArr}
+          </div>
+
+        </main>
+        
+        
+        <aside className='sidenav'>
+
+          <div className='input-container'>
+            <label htmlFor="size-input">Size: </label>
+            <input 
+              className="input size-input slider"
+              onChange={changeSize}
+              // placeholder='Min: 10, Max: 200'
+              name='size-input'
+              type="range"
+              min="10"
+              max="200"
+              step="10"
+            />
+          </div>
+
+          <div className='input-container'>
+            <label htmlFor='speed-input'>Speed: </label>
+            <input 
+              className="input speed-input slider"
+              onChange={changeSpeed}
+              placeholder='Min: 10ms, Max: 1000ms'
+              name="speed-input"
+              type='range'
+              min='10'
+              max='310'
+              step="20"
+            />
+          </div>
+          
+          <div className='btns-algo-container'>
+            <button className='btn-algo' onClick={() => basicSort("insertion", speed)}>Insertion Sort</button>
+            <button className='btn-algo' onClick={() => basicSort("bubble", speed)}>Bubble Sort</button>
+            <button className='btn-algo' onClick={() => basicSort("selection", speed)}>Selection Sort</button>
+
+            <button className='btn-algo' onClick={() => basicSort("merge", speed)}>Merge Sort</button>
+          </div>
+          
+          <div style={{marginTop: "1rem"}}>
+            <button class="btn btn-reset" onClick={() => resetSorter()}>Reset</button>
+          </div>
+
+          <a className='btn-link' href='https://github.com/daerese'>
+            <span><FontAwesomeIcon icon={faGithub} /></span>Daerese
+          </a>
+
+        </aside>
+        
+
       </div>
       
 
-      <div className='input-container'>
-        <label htmlFor="size-input">Size: </label>
-        <input 
-          className="input size-input"
-          onChange={changeSize}
-          placeholder='Min: 10, Max: 200'
-          name='size-input'
-        />
-      </div>
-
-      <div className='input-container'>
-        <label htmlFor='speed-input'>Speed: </label>
-        <input 
-          className="input speed-input"
-          onChange={changeSpeed}
-          placeholder='Min: 10ms, Max: 1000ms'
-          name="speed-input"
-        />
-      </div>
-
-      <button onClick={() => basicSort("insertion", speed)}>Insertion Sort</button>
-      <button onClick={() => basicSort("bubble", speed)}>Bubble Sort</button>
-      <button onClick={() => basicSort("selection", speed)}>Selection Sort</button>
-
-      <button onClick={() => basicSort("merge", speed)}>Merge Sort</button>
-      
-      <div style={{marginTop: "1rem"}}>
-        <button onClick={() => resetSorter()}>Reset</button>
-      </div>
 
     </>
   )
@@ -281,15 +320,15 @@ function App() {
 
   return (
     <>
-      <main>
+      {/* <main> */}
 
-        <h1>Sorter</h1>
+        {/* <h1>Sorter</h1> */}
 
         <SorterWrapper />
 
-        <SoundTest />
+        {/* <SoundTest /> */}
 
-      </main>
+      {/* </main> */}
     </>
   )
 }
