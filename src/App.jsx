@@ -6,7 +6,7 @@ import './App.css'
 import { insertionSort, insertionSortAnim} from './utils/sorting_algorithms/insertionSort'
 import bubbleSort from './utils/sorting_algorithms/bubbleSort'
 import { selectionSort, selectionSortAnim } from './utils/sorting_algorithms/selectionSort'
-import { getMergeSort, MergeSort } from './utils/sorting_algorithms/mergeSort'
+import { MergeSort } from './utils/sorting_algorithms/mergeSort'
 
 
 // * utility functions
@@ -19,9 +19,7 @@ import * as Tone from 'tone'
 import songs from './utils/Music/songs'
 
 // * Font awesome import
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import {  } from '@fortawesome/free-solid-svg-icons'
-// import { faGithub } from 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome' 
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 const Node = (props) => {
@@ -55,10 +53,10 @@ const SorterWrapper = (props) => {
   const [sorted, setSorted] = useState(false);
 
   const MIN_LENGTH = 10;
-  const MAX_LENGTH = 200;
+  // const MAX_LENGTH = 200;
 
-  const MIN_SPEED = 10;
-  const MAX_SPEED = 1000;
+  // const MIN_SPEED = 10;
+  // const MAX_SPEED = 1000;
 
   const colors = {
     default: "lightblue",
@@ -78,39 +76,10 @@ const SorterWrapper = (props) => {
       setSorted(false)
     }
   };
-
-  // * Local sleep with music
-  // function sleep(ms, sampler=null, notes=null, noteIndex=0) {
-
-  //   if (noteIndex >= notes.length) {
-  //     noteIndex = 0
-  //   }
-
-  //   if (sampler && notes) {
-
-  //       Tone.loaded().then(() => {
-  //           // * In case the current note is a chord, just destrecture
-  //           // * the chord array into this array.
-  //           sampler.triggerAttackRelease(notes[noteIndex]);
-  //           console.log(notes[noteIndex])
-  //       })
-  //       // sampler.triggerAttackRelease(...notes[noteIndex], "8n")
-  //   }
-
-  //   // console.log(...notes[noteIndex])
-
-  //   return new Promise(resolve => setTimeout(resolve, ms));
-  // }
   
   // * Event handlers
   const changeSize = (e) => {
     let tempSize = e.target.value
-    if (e.target.value > MAX_LENGTH) {
-      tempSize = MAX_LENGTH
-    }
-    else if (e.target.value < MIN_LENGTH) {
-      tempSize = MIN_LENGTH
-    }
 
     setSize(tempSize)
     sorted ? resetSorter(tempSize, speed) : setArr([...fillArray(tempSize)])
@@ -118,15 +87,7 @@ const SorterWrapper = (props) => {
 
   const changeSpeed = (e) => {
     let speed = e.target.value
-    console.log(speed)
     
-    // if (speed > MAX_SPEED) {
-    //   speed = MAX_SPEED
-    // }
-    // else if (speed < MIN_SPEED) {
-    //   speed = MIN_SPEED
-    // }
-
     sorted ? resetSorter(arr.length, speed) : setSpeed(speed)
 
   }
@@ -155,21 +116,6 @@ const SorterWrapper = (props) => {
         isMerge = true
         break
     }
-
-    // * Sound Effect intialization with Tone.js
-    const sampler = new Tone.Sampler({
-      urls: {
-        C3: "/src/assets/c3-95007.mp3",
-      },
-      // onload: () => {
-      //   sampler.triggerAttackRelease(["A1"], 1);
-      // }
-    }).toDestination();
-
-    // sampler.volume.value = -10
-    // const sampler = new Tone.Synth().toDestination();
-    const notes = songs.twinkle
-    let noteIndex = 0
 
     const result = isMerge ? algorithm.getMergeSort(arr) : algorithm(arr)
 
@@ -271,7 +217,7 @@ const SorterWrapper = (props) => {
             <button className='btn-algo' onClick={() => basicSort("merge", speed)}>Merge Sort</button>
           </div>
           
-          <div style={{marginTop: "1rem"}}>
+          <div>
             <button class="btn btn-reset" onClick={() => resetSorter()}>Reset</button>
           </div>
 
@@ -320,15 +266,7 @@ function App() {
 
   return (
     <>
-      {/* <main> */}
-
-        {/* <h1>Sorter</h1> */}
-
         <SorterWrapper />
-
-        {/* <SoundTest /> */}
-
-      {/* </main> */}
     </>
   )
 }
