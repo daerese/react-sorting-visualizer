@@ -10,4 +10,3 @@ Sorting algorithms progress:
 - ~Selection Sort~ ✅
 - ~Merge Sort~ ✅
 - Quick Sort ⚫
-- Quick Sort (Median of 3)
