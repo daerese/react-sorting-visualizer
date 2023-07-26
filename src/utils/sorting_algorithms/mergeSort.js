@@ -1,7 +1,7 @@
 import sleep from '../functions/sleep'
 
 class MergeSort {
-    constructor(options) {
+    constructor() {
         this.steps = []
         this.arr = []
     }
@@ -24,7 +24,7 @@ class MergeSort {
 
         while (i < arrA.length && j < arrB.length) {
 
-
+            // * These steps will be used later to animate the algorithm.
             const step = {
                 pushPoint: start,
                 left: leftIndexArr[i].index,
@@ -75,7 +75,6 @@ class MergeSort {
     }
 
     mergeSort(arr, indexArr) {
-        let steps = []
 
         if (arr.length <= 1) {
             return arr
@@ -99,7 +98,7 @@ class MergeSort {
         return this.merge(left, right, leftIndexArr, rightIndexArr)
     }
 
-    async mergeSortAnim(speed, nodes, colors, setState) {
+    async getAnimation(speed, nodes, colors, setState) {
 
         // * Helper function to highlight the current nodes being sorted
         const highlight = (start, end) => {
@@ -180,11 +179,13 @@ class MergeSort {
 
     }
 
-    getMergeSort(arr) {
+    getResult(arr) {
         this.steps = []
         this.arr = arr
 
-
+        // * This helps keep track of the index positions of each number
+        // * within the original array. This will be helpful as the 
+        // * algorithm goes through recursion.
         const indexArr = []
         for (let i = 0; i < arr.length; i++) {
             indexArr.push({
@@ -206,97 +207,4 @@ class MergeSort {
 
 }
 
-const merge = (arrA, arrB, origin) => {
-
-    let result = []
-    let i = 0
-    let j = 0
-
-
-
-    let leftOrigin = origin.left
-    let rightOrigin = origin.right
-
-    
-
-    while (i < arrA.length && j < arrB.length) {
-
-        if (arrA[i] < arrB[j]) {
-            result.push(arrA[i])
-            i++
-        }
-        else {
-            result.push(arrB[j])
-            j++
-        }
-    }
-
-
-    while (i < arrA.length) {
-        result.push(arrA[i])
-        i++
-    }
-
-    while (j < arrB.length) {
-        result.push(arrB[j])
-        j++
-    }
-
-    return [...result, ...arrA.slice(i), ...arrB.slice(j)]
-
-}
-
-const mergeSort = (arr, originIndices=null) => {
-
-    let steps = []
-
-    if (arr.length <= 1) {
-        return arr
-    }
-
-    let mid = Math.floor(arr.length / 2)
-
-    let left = arr.slice(0, mid)
-
-    let right = arr.slice(mid)
-
-    let origin = {}
-
-    // * Origin will keep track of the indexes of the 
-    // * original array for the animations. 
-    // * THe left and right origin holds the start and end indices
-    // * in an array. 
-    if (!originIndices) {
-        origin.left = [0, mid]
-        origin.right = [mid, arr.length - 1]
-    } else {
-
-        let originMid = Math.floor(originIndices[1] / 2)
-        origin.left = [originIndices[0], originMid]
-        origin.right = [originMid, originIndices[1]]
-    }
-
-
-    left = mergeSort(left, origin.left)
-    right = mergeSort(right, origin.right)
-
-    // console.log("LEFT: ", left, " RIGHT: ", right)
-
-    // * The left and right array should already be sorted...
-    return merge(left, right, origin)
-}
-
-const getMergeSort = (arr) => {
-
-    let steps = []
-
-    console.log("ORIGINAL: ", arr)
-
-    let result = mergeSort(arr)
-
-    // console.log("INSIDE MERGE SORT: ", result)
-
-    return {sortedArray: result, steps: steps}
-}
-
-export {getMergeSort, MergeSort}
+export default MergeSort

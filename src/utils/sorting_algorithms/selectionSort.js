@@ -46,7 +46,7 @@ export function selectionSort(arr) {
     return {sortedArray: arr, steps: steps}
 }
 
-export async function selectionSortAnim(steps, speed, nodes, colors) {
+export async function selectionAnim(steps, speed, nodes, colors) {
 
     // * Selection Sort Visual
     for (let step of steps) {

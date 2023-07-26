@@ -49,7 +49,7 @@ export function insertionSort(arr) {
   }
 
 
-export async function insertionSortAnim(steps, speed, nodes, colors) {
+export async function insertionBubbleAnim(steps, speed, nodes, colors) {
 
     // * Insertion / Bubble Sort Visual
     // **********************
