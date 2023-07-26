@@ -91,9 +91,7 @@ class MergeSort {
         left = this.mergeSort(left, leftIndexArr)
         right = this.mergeSort(right, rightIndexArr)
 
-        // console.log("LEFT: ", left, " RIGHT: ", right)
-        // console.log("Left indices: ", leftIndexArr, " Right indices: ", rightIndexArr)
-
+    
         // * The left and right array should already be sorted...
         return this.merge(left, right, leftIndexArr, rightIndexArr)
     }
@@ -122,7 +120,6 @@ class MergeSort {
             // * 2. Intiate a loop through the current merge steps.
             for (let mergeStep of step.currMerge) {
 
-                console.log("Current step: ", mergeStep)
                 
 
                 const leftStyle = nodes[mergeStep.left].style
@@ -149,10 +146,7 @@ class MergeSort {
                     // * removing it from the original array
                     const targetValue = this.arr[targetIndex]
                     this.arr.splice(targetIndex, 1)
-                    console.log("Target value: ", targetValue)
-
-
-                   
+                  
                     this.arr = [
                         ...this.arr.slice(0, pushIndex),
                         targetValue,

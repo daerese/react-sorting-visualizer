@@ -148,15 +148,12 @@ class QuickSort {
 
                     const swapStyle = nodes[value.swapIdx].style
 
-                    console.log(swapStyle)
                     indexStyle.background = "coral"
                     swapStyle.background = "green"
 
                     await sleep(speed)
 
-                    // console.log("Before: ", this.arr)
                     this.swap(this.arr, value.index, value.swapIdx)
-                    // console.log("after: ", this.arr)
                     
                     setState([...this.arr])
 
@@ -197,11 +194,9 @@ class QuickSort {
         // * places in memory, so changing one doesn't affect the other.
         this.arr = arr.slice(0)
 
-        console.log("Class array before: ", this.arr)
+
 
         this.quickSort(arr)
-
-        console.log("Class array after: ", this.arr)
 
         return {sortedArray: arr, steps: this.steps}
 

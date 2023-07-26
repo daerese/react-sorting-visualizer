@@ -25,7 +25,7 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 const Node = (props) => {
 
   useEffect(() => {
-    console.log("Node change")
+    // console.log("Node change")
   })
 
     return (
@@ -138,7 +138,6 @@ const SorterWrapper = (props) => {
     }
     else if (isAdvanced) {
       await algorithm.getAnimation(speed, nodes, colors, setArr)
-      console.log("Do merge...")
     }
     else {
       // * Selection Sort Visual
