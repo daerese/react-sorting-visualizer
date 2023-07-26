@@ -9,4 +9,5 @@ Sorting algorithms progress:
 - ~Bubble Sort~ ✅
 - ~Selection Sort~ ✅
 - ~Merge Sort~ ✅
-- Quick Sort ⚫
+- ~Quick Sort~ ✅
+- Heap Sort ⚫
