@@ -52,6 +52,8 @@ const SorterWrapper = (props) => {
   const [arr, setArr] = useState([...fillArray(size)]);
   const [sorted, setSorted] = useState(false);
 
+  const [isSorting, setIsSorting] = useState(false)
+
   // * Color names for each theme:
   // *** Default/Unsorted -- Blue
   // *** Loop -- Pink
@@ -96,7 +98,7 @@ const SorterWrapper = (props) => {
   // * Main sorting visualizer function
 
   // * ---------------------------
-  const basicSort = async (algorithm, speed) => {
+  const startSort = async (algorithm, speed) => {
 
     let isSelection = false
     let isAdvanced = false
@@ -130,6 +132,8 @@ const SorterWrapper = (props) => {
 
     const nodes = document.getElementsByClassName('node')
 
+    setIsSorting(true)
+
     if (!isSelection && !isAdvanced) {
       // * Insertion / Bubble Sort Visual
       // **********************
@@ -146,6 +150,9 @@ const SorterWrapper = (props) => {
     
     setArr([...result.sortedArray])
     setSorted(true)
+
+    setIsSorting(false)
+
 
   }
 // * ---------------------------
@@ -194,6 +201,7 @@ const SorterWrapper = (props) => {
               value={size}
               max="200"
               step="10"
+              disabled={isSorting}
             />
           </div>
 
@@ -209,20 +217,21 @@ const SorterWrapper = (props) => {
               value={speed}
               max='310'
               step="20"
+              disabled={isSorting}
             />
           </div>
           
           <div className='btns-algo-container'>
-            <button className='btn-algo' onClick={() => basicSort("insertion", speed)}>Insertion Sort</button>
-            <button className='btn-algo' onClick={() => basicSort("bubble", speed)}>Bubble Sort</button>
-            <button className='btn-algo' onClick={() => basicSort("selection", speed)}>Selection Sort</button>
+            <button className='btn-algo' onClick={() => startSort("insertion", speed)} disabled={isSorting}>Insertion Sort</button>
+            <button className='btn-algo' onClick={() => startSort("bubble", speed)} disabled={isSorting}>Bubble Sort</button>
+            <button className='btn-algo' onClick={() => startSort("selection", speed)} disabled={isSorting}>Selection Sort</button>
 
-            <button className='btn-algo' onClick={() => basicSort("merge", speed)}>Merge Sort</button>
-            <button className='btn-algo' onClick={() => basicSort("quick", speed)}>Quick Sort</button>
+            <button className='btn-algo' onClick={() => startSort("merge", speed)} disabled={isSorting}>Merge Sort</button>
+            <button className='btn-algo' onClick={() => startSort("quick", speed)} disabled={isSorting}>Quick Sort</button>
           </div>
           
           <div>
-            <button className="btn btn-reset" onClick={() => resetSorter()}>Reset</button>
+            <button className="btn btn-reset" onClick={() => resetSorter()} disabled={isSorting}>Reset</button>
           </div>
 
           <a className='btn-link' href='https://github.com/daerese'>
@@ -241,28 +250,6 @@ const SorterWrapper = (props) => {
   
 }
 
-const SoundTest = () => {
-  // const sampler = new Tone.Sampler({
-  //   urls: {
-  //     C3: "/src/assets/c3-95007.mp3",
-  //   },
-  //   // onload: () => {
-  //   //   sampler.triggerAttackRelease(["A1"], 1);
-  //   // }
-  // }).toDestination();
-
-  const sampler = new Tone.Synth().toDestination();
-
-  const playSound = () => {
-
-    sampler.triggerAttackRelease("C4", "8n")
-    // sampler.triggerAttackRelease("G4", "8n")
-  }
-
-  return (
-    <button onClick={() => playSound()}>Play a sound...</button>
-  )
-}
 
 
 function App() {
