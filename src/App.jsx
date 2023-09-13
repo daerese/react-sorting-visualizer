@@ -124,7 +124,9 @@ const SorterWrapper = (props) => {
         break
     }
 
-    const result = isAdvanced ? algorithm.getResult(arr) : algorithm(arr)
+    const arrCopy = [...arr]
+
+    const result = isAdvanced ? algorithm.getResult(arrCopy) : algorithm(arrCopy)
 
     const steps = result.steps
     
